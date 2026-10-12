@@ -1,0 +1,26 @@
+# Environment and secret files
+.env
+.env.*
+*.token
+*.key
+
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Operating system & editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test & log artifacts
+*.log
+scratch/
+temp/

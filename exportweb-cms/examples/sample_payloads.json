@@ -1,0 +1,152 @@
+{
+  "tools_list_request": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/list",
+    "params": {}
+  },
+  "tools_list_response": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "tools": [
+        {
+          "name": "products_search",
+          "description": "Search products/service solutions by keyword, category, or active status.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "query": { "type": "string" },
+              "category": { "type": "string" },
+              "is_active": { "type": "boolean" }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "products_create_request": {
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "tools/call",
+    "params": {
+      "name": "products_create",
+      "arguments": {
+        "name": "Indonesian Virgin Coconut Oil (VCO)",
+        "slug": "indonesian-virgin-coconut-oil-vco",
+        "category": "Agriculture & Oils",
+        "hs_code": "1513.11.00",
+        "origin": "Surabaya Port, Indonesia",
+        "moq": "1x20ft FCL (80 drums / 15.2 MT)",
+        "packing_detail": "190kg steel food-grade drums or 1000L IBC totes",
+        "supply_capacity": "250 MT / Month",
+        "incoterms": "FOB, CIF, CFR",
+        "description": "Cold-pressed extra virgin coconut oil processed from fresh mature coconuts under HACCP and ISO 22000 standards. Free fatty acid content < 0.1%, moisture < 0.05%.",
+        "images": [
+          "https://assets.exportweb.app/clients/exportweb/products/vco-drum-hero.webp",
+          "https://assets.exportweb.app/clients/exportweb/products/vco-lab-sample.webp"
+        ],
+        "is_featured": true,
+        "is_active": true
+      }
+    }
+  },
+  "products_update_request": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "tools/call",
+    "params": {
+      "name": "products_update",
+      "arguments": {
+        "id": "prod_c84a921d",
+        "moq": "1x40ft FCL (24 MT)",
+        "incoterms": "CIF, CFR, FOB, EXW",
+        "supply_capacity": "500 MT / Month"
+      }
+    }
+  },
+  "articles_create_request": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "method": "tools/call",
+    "params": {
+      "name": "articles_create",
+      "arguments": {
+        "title": "Understanding Harmonized System (HS) Codes for Bulk Agricultural Exports",
+        "slug": "understanding-hs-codes-for-bulk-agricultural-exports",
+        "category": "Export Compliance",
+        "excerpt": "A practical compliance handbook for international exporters and freight forwarders navigating tariff classifications.",
+        "content": "# The Strategic Role of HS Code Classification\n\nPrecise tariff declaration prevents port demurrage...",
+        "author": "Trade Advisory Team",
+        "is_published": true,
+        "meta_title": "Understanding HS Codes for Bulk Agricultural Exports | ExportWeb",
+        "meta_description": "Essential tariff and customs compliance guidelines for enterprise agricultural exporters.",
+        "meta_keywords": "HS code, export compliance, customs clearance, agricultural tariffs",
+        "lang_code": "en"
+      }
+    }
+  },
+  "galleries_create_request": {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "method": "tools/call",
+    "params": {
+      "name": "galleries_create",
+      "arguments": {
+        "title": "Automated Moisture & Ash Spectrometer Testing Station",
+        "image_url": "https://assets.exportweb.app/clients/exportweb/facility/lab-testing-station.webp",
+        "category": "Testing & QA",
+        "description": "In-house laboratory verifying ASTM D3172 proximate standards for every export stuffing batch.",
+        "sort_order": 1
+      }
+    }
+  },
+  "inquiries_update_status_request": {
+    "jsonrpc": "2.0",
+    "id": 6,
+    "method": "tools/call",
+    "params": {
+      "name": "inquiries_update_status",
+      "arguments": {
+        "id": "inq_7f81ab92",
+        "status": "replied"
+      }
+    }
+  },
+  "settings_update_request": {
+    "jsonrpc": "2.0",
+    "id": 7,
+    "method": "tools/call",
+    "params": {
+      "name": "settings_update",
+      "arguments": {
+        "company_name": "ExportWeb Global Trade Infrastructure",
+        "whatsapp_number": "+628112345678",
+        "office_address": "ExportWeb HQ Tower, Level 22, Jakarta, Indonesia",
+        "factory_address": "Kendal Industrial Park Block B3, Central Java, Indonesia",
+        "social_links": "{\"linkedin\":\"https://linkedin.com/company/exportweb\",\"youtube\":\"https://youtube.com/@exportweb\"}"
+      }
+    }
+  },
+  "languages_toggle_request": {
+    "jsonrpc": "2.0",
+    "id": 8,
+    "method": "tools/call",
+    "params": {
+      "name": "languages_toggle",
+      "arguments": {
+        "code": "ar",
+        "is_enabled": true
+      }
+    }
+  },
+  "dashboard_stats_request": {
+    "jsonrpc": "2.0",
+    "id": 9,
+    "method": "tools/call",
+    "params": {
+      "name": "dashboard_stats",
+      "arguments": {}
+    }
+  }
+}

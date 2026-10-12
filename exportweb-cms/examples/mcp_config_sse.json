@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "exportweb-cms": {
+      "serverUrl": "https://exportweb.app/mcp/sse",
+      "headers": {
+        "Authorization": "Bearer ew_sec_REPLACE_WITH_YOUR_MCP_SECRET_TOKEN"
+      }
+    }
+  }
+}
