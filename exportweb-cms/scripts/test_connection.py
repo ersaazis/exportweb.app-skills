@@ -101,6 +101,7 @@ def main():
 
     # Display discovered tools grouped by domain
     categories = {
+        "Assets": [],
         "Products": [],
         "Galleries": [],
         "Articles": [],

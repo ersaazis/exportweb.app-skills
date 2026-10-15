@@ -1,6 +1,6 @@
 # ExportWeb MCP Tools Reference Guide
 
-This document provides exhaustive technical specifications for all **24 tools** exposed by the ExportWeb Go Model Context Protocol (MCP) server.
+This document provides exhaustive technical specifications for all **25 tools** exposed by the ExportWeb Go Model Context Protocol (MCP) server.
 
 All tool invocations follow the **JSON-RPC 2.0** format:
 ```json
@@ -17,7 +17,28 @@ All tool invocations follow the **JSON-RPC 2.0** format:
 
 ---
 
-## 📦 1. Products & Commodities Tools
+## 🖼️ 1. Assets & Media Storage Tools
+
+Tools to upload and store high-resolution B2B photography, plant walkthroughs, and branding assets to Cloudflare R2 / MinIO storage.
+
+### `assets_upload`
+Upload an image or asset file to storage via inline Base64 data or remote URL fetch.
+- **Parameters**:
+  - `file_base64` *(string, optional)*: Base64-encoded string of the file (supports raw base64 or `data:<mime>;base64,...` URI).
+  - `source_url` *(string, optional)*: Remote HTTP/HTTPS URL to download and ingest into storage.
+  - `filename` *(string, optional)*: Desired filename (e.g. `"autoclave-01.jpg"`, `"brand-logo.png"`). Auto-derived if omitted.
+  - `category` *(string, optional)*: Target category (`"branding"`, `"products"`, `"gallery"`, `"articles"`, `"general"`, default: `"general"`).
+  - `content_type` *(string, optional)*: Explicit MIME type. Auto-detected from bytes or extension if omitted.
+- **Returns**: Object with:
+  - `status`: `"uploaded"`
+  - `url`: Permanent public asset HTTPS URL.
+  - `key`: S3/R2 object storage key (`clients/{tenant}/...`).
+  - `filename`: Clean sanitized filename.
+  - `category`: Storage category.
+
+---
+
+## 📦 2. Products & Commodities Tools
 
 Manage product offerings, technical specifications, and international export trade parameters.
 
@@ -33,7 +54,7 @@ Search products and export service packages by keyword, category, or status.
 Register a new product or export package in the catalog.
 - **Parameters**:
   - `name` *(string, **required**)*: Product title (e.g. `"Premium Coconut Charcoal Briquettes"`).
-  - `slug` *(string, **required**)*: Unique URL slug (e.g. `"premium-coconut-charcoal-briquettes"`).
+  - `slug` *(string, optional)*: Unique URL slug. Automatically generated from `name` if omitted.
   - `category` *(string, optional)*: Category designation (defaults to `"General"`).
   - `hs_code` *(string, optional)*: Harmonized System tariff code (e.g. `"4402.90.10"`).
   - `origin` *(string, optional)*: Country of origin or load port (e.g. `"Semarang, Indonesia"`).
@@ -43,9 +64,12 @@ Register a new product or export package in the catalog.
   - `incoterms` *(string, optional)*: Supported trade terms (e.g. `"FOB, CIF, CFR, EXW"`).
   - `description` *(string, optional)*: Detailed product specifications and descriptions.
   - `images` *(array of string, optional)*: Array of HTTPS URLs for product photographs.
+  - `images_base64` *(array of string/objects, optional)*: Inline Base64 image data to auto-upload to storage.
+  - `image_base64` *(string, optional)*: Single inline Base64 image to auto-upload.
+  - `source_url` *(string, optional)*: Remote image URL to download and ingest into storage.
   - `is_featured` *(boolean, optional)*: Whether to feature the item on the storefront home.
   - `is_active` *(boolean, optional)*: Active status in catalog (default: `true`).
-- **Returns**: Object with created product ID and status.
+- **Returns**: Object with created product ID, slug, and status.
 
 ### `products_read`
 Retrieve full product details, specifications, and images by ID or slug.
@@ -53,7 +77,7 @@ Retrieve full product details, specifications, and images by ID or slug.
   - `id` *(string, optional)*: Product ID (e.g. `"prod_abc123"`).
   - `slug` *(string, optional)*: Product URL slug (e.g. `"premium-coconut-charcoal-briquettes"`).
   *(At least one identifier must be provided)*
-- **Returns**: Full product object.
+- **Returns**: Full product object with localized translations.
 
 ### `products_update`
 Update specifications or status of an existing product.
@@ -70,19 +94,21 @@ Update specifications or status of an existing product.
   - `incoterms` *(string, optional)*: Updated Incoterms.
   - `description` *(string, optional)*: Updated description text.
   - `images` *(array of string, optional)*: Updated list of image URLs.
+  - `images_base64` *(array, optional)*: New Base64 images to upload and append.
+  - `source_url` *(string, optional)*: Remote image URL to download and append.
   - `is_featured` *(boolean, optional)*: Updated featured flag.
   - `is_active` *(boolean, optional)*: Updated active status.
-- **Returns**: Updated product object.
+- **Returns**: Updated product status.
 
 ### `products_delete`
-Permanently remove a product from the database.
+Permanently remove a product from the catalog. Automatically prunes all associated image assets from Cloudflare R2 / MinIO storage and invalidates storefront cache.
 - **Parameters**:
   - `id` *(string, **required**)*: Product ID to remove.
 - **Returns**: Success confirmation.
 
 ---
 
-## 🖼️ 2. Facility & Media Galleries Tools
+## 🖼️ 3. Facility & Media Galleries Tools
 
 Curate visual proof of factory facilities, machinery, laboratory tests, and container stuffing.
 
@@ -97,7 +123,10 @@ Search photo documentation by title, category, or description.
 Add a verified photo or facility asset to the gallery.
 - **Parameters**:
   - `title` *(string, **required**)*: Asset title (e.g. `"Automated Kiln Battery #3"`).
-  - `image_url` *(string, **required**)*: Public HTTPS asset URL.
+  - `image_url` *(string, optional)*: Public HTTPS asset URL (or provide `image_base64` / `source_url`).
+  - `image_base64` *(string, optional)*: Inline Base64 image data to auto-upload to storage.
+  - `source_url` *(string, optional)*: Remote image URL to download and ingest into storage.
+  - `filename` *(string, optional)*: Custom filename for uploaded asset.
   - `category` *(string, optional)*: Categorization (e.g. `"Facility"`, `"Loading"`, `"Lab"`).
   - `description` *(string, optional)*: Technical caption or description.
   - `sort_order` *(integer, optional)*: Numeric display order (default `0`).
@@ -110,25 +139,27 @@ Retrieve gallery item details.
 - **Returns**: Gallery item record.
 
 ### `galleries_update`
-Update title, caption, sort order, or image URL of an existing photo.
+Update title, caption, sort order, or image URL of an existing photo. Automatically prunes previous image from storage if replaced with a new one.
 - **Parameters**:
   - `id` *(string, **required**)*: Gallery ID to update.
   - `title` *(string, optional)*: New title.
   - `image_url` *(string, optional)*: New image URL.
+  - `image_base64` *(string, optional)*: New Base64 image to upload.
+  - `source_url` *(string, optional)*: Remote image URL to download and replace existing.
   - `category` *(string, optional)*: New category.
   - `description` *(string, optional)*: New description.
   - `sort_order` *(integer, optional)*: New sort sequence.
-- **Returns**: Updated record.
+- **Returns**: Updated record status.
 
 ### `galleries_delete`
-Delete a gallery photo record.
+Delete a gallery photo record. Automatically prunes the photo asset from Cloudflare R2 / MinIO storage and clears storefront cache.
 - **Parameters**:
   - `id` *(string, **required**)*: Gallery ID to delete.
 - **Returns**: Confirmation.
 
 ---
 
-## 📰 3. Articles & Market Intelligence Tools
+## 📰 4. Articles & Market Intelligence Tools
 
 Publish international B2B educational articles and maintain multi-language SEO rankings.
 
@@ -145,11 +176,13 @@ Search market intelligence articles by keyword or category.
 Publish a new export intelligence article with complete metadata.
 - **Parameters**:
   - `title` *(string, **required**)*: Article headline.
-  - `slug` *(string, **required**)*: URL slug.
+  - `slug` *(string, optional)*: URL slug. Auto-generated from `title` if omitted.
   - `content` *(string, **required**)*: Markdown or HTML formatted article body.
   - `excerpt` *(string, optional)*: Executive summary / lead paragraph.
   - `category` *(string, optional)*: Article category.
   - `cover_image` *(string, optional)*: Feature image HTTPS URL.
+  - `cover_image_base64` *(string, optional)*: Inline Base64 image data to auto-upload as cover.
+  - `source_url` *(string, optional)*: Remote image URL to download and set as cover.
   - `author` *(string, optional)*: Author byline.
   - `is_published` *(boolean, optional)*: Published flag (default: `true`).
   - `meta_title` *(string, optional)*: SEO title tag (under 60 characters).
@@ -167,11 +200,14 @@ Retrieve article content and SEO metadata by ID or slug.
 - **Returns**: Article full content and metadata.
 
 ### `articles_update`
-Update body content, SEO metadata, or publish status of an article.
+Update body content, SEO metadata, or publish status of an article. Automatically prunes old cover image from storage if replaced.
 - **Parameters**:
   - `id` *(string, **required**)*: Article ID.
   - `title` *(string, optional)*: Updated headline.
   - `slug` *(string, optional)*: Updated slug.
+  - `cover_image` *(string, optional)*: New cover image URL.
+  - `cover_image_base64` *(string, optional)*: New Base64 image to upload as cover.
+  - `source_url` *(string, optional)*: Remote image URL to download as cover.
   - `content` *(string, optional)*: Updated content body.
   - `excerpt` *(string, optional)*: Updated excerpt.
   - `category` *(string, optional)*: Updated category.
@@ -226,18 +262,18 @@ Configure the corporate sales inbox that receives real-time lead alerts.
 
 ---
 
-## ⚙️ 5. Site Settings & SEO Tools
+## ⚙️ 6. Site Settings, Corporate Identity & SEO Tools
 
-Manage tenant corporate identity, contact coordinates, social media profiles, and default SEO tags.
+Manage tenant corporate identity, contact coordinates, discrete social media profiles, branding assets, and multilingual SEO tags.
 
 ### `settings_get`
-Retrieve current tenant configuration and contact parameters.
+Retrieve current tenant configuration, branding URLs, and contact parameters.
 - **Parameters**:
-  - `lang_code` *(string, optional)*: Optional locale for localized settings.
-- **Returns**: Complete settings dictionary.
+  - `lang_code` *(string, optional)*: Optional locale for localized settings (e.g. `"id"`, `"de"`, `"zh"`, `"ja"`).
+- **Returns**: Complete settings dictionary with branding URLs and localized SEO tags.
 
 ### `settings_update`
-Update corporate profile, plant locations, social links, and metadata.
+Update corporate profile, plant locations, social links, branding assets, and SEO metadata.
 - **Parameters**:
   - `company_name` *(string, optional)*: Legal enterprise name.
   - `company_profile` *(string, optional)*: Value proposition / corporate overview.
@@ -250,17 +286,31 @@ Update corporate profile, plant locations, social links, and metadata.
   - `seo_title` *(string, optional)*: Default site `<title>`.
   - `seo_description` *(string, optional)*: Default site meta description.
   - `seo_keywords` *(string, optional)*: Default site meta keywords.
+  - `about_company` *(string, optional)*: Localized about company text (used when `lang_code` is specified).
+  - `lang_code` *(string, optional)*: Language locale for saving localized SEO tags (e.g. `"ja"`, `"de"`, `"id"`).
   - `logo_url` *(string, optional)*: Main logo HTTPS URL.
+  - `logo_base64` *(string, optional)*: Inline Base64 image data to auto-upload as brand logo (prunes old logo).
+  - `logo_source_url` *(string, optional)*: Remote image URL to download as logo.
   - `favicon_url` *(string, optional)*: Favicon HTTPS URL.
+  - `favicon_base64` *(string, optional)*: Inline Base64 image data to auto-upload as browser favicon (prunes old favicon).
+  - `favicon_source_url` *(string, optional)*: Remote image URL to download as favicon.
   - `og_image_url` *(string, optional)*: OpenGraph preview banner HTTPS URL.
-  - `social_links` *(string, optional)*: JSON encoded string of social profiles (e.g. `{"linkedin":"...","youtube":"..."}`).
+  - `og_image_base64` *(string, optional)*: Inline Base64 image data to auto-upload as OG banner (prunes old banner).
+  - `og_image_source_url` *(string, optional)*: Remote image URL to download as OG banner.
+  - `social_links` *(string or object, optional)*: JSON encoded string or structured object of social profiles.
+  - `linkedin` *(string, optional)*: Discrete LinkedIn corporate URL.
+  - `instagram` *(string, optional)*: Discrete Instagram profile URL.
+  - `facebook` *(string, optional)*: Discrete Facebook page URL.
+  - `twitter` *(string, optional)*: Discrete Twitter/X profile URL.
+  - `youtube` *(string, optional)*: Discrete YouTube channel URL.
+  - `whatsapp` *(string, optional)*: Discrete WhatsApp channel URL.
   - `header_scripts` *(string, optional)*: Custom header scripts (analytics/tags).
   - `body_scripts` *(string, optional)*: Custom body tracking scripts.
 - **Returns**: Confirmation and updated settings state.
 
 ---
 
-## 🌐 6. Languages & Multilingual Routing Tools
+## 🌐 7. Languages & Multilingual Routing Tools
 
 Control active subfolder languages for the tenant storefront.
 
@@ -279,7 +329,7 @@ Enable or disable a specific language locale.
 
 ---
 
-## 📊 7. Executive Dashboard Tools
+## 📊 8. Executive Dashboard Tools
 
 ### `dashboard_stats`
 Retrieve an executive overview of platform activity and database volumes.
@@ -292,3 +342,4 @@ Retrieve an executive overview of platform activity and database volumes.
   - `new_inquiries`: Unprocessed leads requiring attention.
   - `enabled_languages`: Count of active multilingual locales.
   - `engine_version`: Active platform backend version.
+

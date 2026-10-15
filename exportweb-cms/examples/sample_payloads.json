@@ -5,47 +5,73 @@
     "method": "tools/list",
     "params": {}
   },
-  "tools_list_response": {
-    "jsonrpc": "2.0",
-    "id": 1,
-    "result": {
-      "tools": [
-        {
-          "name": "products_search",
-          "description": "Search products/service solutions by keyword, category, or active status.",
-          "inputSchema": {
-            "type": "object",
-            "properties": {
-              "query": { "type": "string" },
-              "category": { "type": "string" },
-              "is_active": { "type": "boolean" }
-            }
-          }
-        }
-      ]
-    }
-  },
-  "products_create_request": {
+  "assets_upload_base64_request": {
     "jsonrpc": "2.0",
     "id": 2,
     "method": "tools/call",
     "params": {
+      "name": "assets_upload",
+      "arguments": {
+        "file_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+        "filename": "coconut-charcoal-briquettes.png",
+        "category": "products"
+      }
+    }
+  },
+  "assets_upload_url_request": {
+    "jsonrpc": "2.0",
+    "id": 3,
+    "method": "tools/call",
+    "params": {
+      "name": "assets_upload",
+      "arguments": {
+        "source_url": "https://raw.githubusercontent.com/b2b-exporter/platform/main/code/static/img/product-placeholder.jpg",
+        "filename": "factory-kiln-overview.jpg",
+        "category": "gallery"
+      }
+    }
+  },
+  "products_create_minimal_request": {
+    "jsonrpc": "2.0",
+    "id": 4,
+    "method": "tools/call",
+    "params": {
       "name": "products_create",
       "arguments": {
-        "name": "Indonesian Virgin Coconut Oil (VCO)",
-        "slug": "indonesian-virgin-coconut-oil-vco",
+        "name": "Grade A Coconut Shell Charcoal Briquettes",
+        "category": "Commodities",
+        "hs_code": "4402.90.10",
+        "origin": "Semarang Port, Indonesia",
+        "moq": "1x20ft FCL (18 MT)",
+        "packing_detail": "1kg inner box, 10kg master carton",
+        "supply_capacity": "300 MT / Month",
+        "incoterms": "CIF, CFR, FOB",
+        "description": "100% natural coconut shell briquettes with 2.2% max ash and 80% fixed carbon.",
+        "images": [
+          "https://assets.exportweb.app/clients/exportweb/products/charcoal-hero.webp"
+        ],
+        "is_featured": true,
+        "is_active": true
+      }
+    }
+  },
+  "products_create_inline_base64_request": {
+    "jsonrpc": "2.0",
+    "id": 5,
+    "method": "tools/call",
+    "params": {
+      "name": "products_create",
+      "arguments": {
+        "name": "Cold-Pressed Virgin Coconut Oil (VCO)",
         "category": "Agriculture & Oils",
         "hs_code": "1513.11.00",
         "origin": "Surabaya Port, Indonesia",
         "moq": "1x20ft FCL (80 drums / 15.2 MT)",
-        "packing_detail": "190kg steel food-grade drums or 1000L IBC totes",
+        "packing_detail": "190kg steel food-grade drums",
         "supply_capacity": "250 MT / Month",
-        "incoterms": "FOB, CIF, CFR",
-        "description": "Cold-pressed extra virgin coconut oil processed from fresh mature coconuts under HACCP and ISO 22000 standards. Free fatty acid content < 0.1%, moisture < 0.05%.",
-        "images": [
-          "https://assets.exportweb.app/clients/exportweb/products/vco-drum-hero.webp",
-          "https://assets.exportweb.app/clients/exportweb/products/vco-lab-sample.webp"
-        ],
+        "incoterms": "FOB, CIF",
+        "description": "Extra virgin coconut oil processed under HACCP and ISO 22000 standards. FFA < 0.1%.",
+        "image_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
         "is_featured": true,
         "is_active": true
       }
@@ -53,7 +79,7 @@
   },
   "products_update_request": {
     "jsonrpc": "2.0",
-    "id": 3,
+    "id": 6,
     "method": "tools/call",
     "params": {
       "name": "products_update",
@@ -65,19 +91,71 @@
       }
     }
   },
+  "products_delete_request": {
+    "jsonrpc": "2.0",
+    "id": 7,
+    "method": "tools/call",
+    "params": {
+      "name": "products_delete",
+      "arguments": {
+        "id": "prod_c84a921d"
+      }
+    }
+  },
+  "galleries_create_request": {
+    "jsonrpc": "2.0",
+    "id": 8,
+    "method": "tools/call",
+    "params": {
+      "name": "galleries_create",
+      "arguments": {
+        "title": "Continuous Hydraulic Briquette Extrusion Line",
+        "image_url": "https://assets.exportweb.app/clients/exportweb/gallery/hydraulic-press.jpg",
+        "category": "Facility",
+        "description": "High-density automated continuous extrusion line.",
+        "sort_order": 1
+      }
+    }
+  },
+  "galleries_create_inline_base64_request": {
+    "jsonrpc": "2.0",
+    "id": 9,
+    "method": "tools/call",
+    "params": {
+      "name": "galleries_create",
+      "arguments": {
+        "title": "Automatic Moisture & Ash Testing Laboratory",
+        "image_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+        "category": "Lab & Quality Control",
+        "description": "In-house laboratory verifying ASTM proximate analysis.",
+        "sort_order": 2
+      }
+    }
+  },
+  "galleries_delete_request": {
+    "jsonrpc": "2.0",
+    "id": 10,
+    "method": "tools/call",
+    "params": {
+      "name": "galleries_delete",
+      "arguments": {
+        "id": "gal_38e1a90c"
+      }
+    }
+  },
   "articles_create_request": {
     "jsonrpc": "2.0",
-    "id": 4,
+    "id": 11,
     "method": "tools/call",
     "params": {
       "name": "articles_create",
       "arguments": {
         "title": "Understanding Harmonized System (HS) Codes for Bulk Agricultural Exports",
-        "slug": "understanding-hs-codes-for-bulk-agricultural-exports",
         "category": "Export Compliance",
         "excerpt": "A practical compliance handbook for international exporters and freight forwarders navigating tariff classifications.",
         "content": "# The Strategic Role of HS Code Classification\n\nPrecise tariff declaration prevents port demurrage...",
         "author": "Trade Advisory Team",
+        "cover_image": "https://assets.exportweb.app/clients/exportweb/articles/hs-code-guide.jpg",
         "is_published": true,
         "meta_title": "Understanding HS Codes for Bulk Agricultural Exports | ExportWeb",
         "meta_description": "Essential tariff and customs compliance guidelines for enterprise agricultural exporters.",
@@ -86,24 +164,50 @@
       }
     }
   },
-  "galleries_create_request": {
+  "articles_create_inline_cover_request": {
     "jsonrpc": "2.0",
-    "id": 5,
+    "id": 12,
     "method": "tools/call",
     "params": {
-      "name": "galleries_create",
+      "name": "articles_create",
       "arguments": {
-        "title": "Automated Moisture & Ash Spectrometer Testing Station",
-        "image_url": "https://assets.exportweb.app/clients/exportweb/facility/lab-testing-station.webp",
-        "category": "Testing & QA",
-        "description": "In-house laboratory verifying ASTM D3172 proximate standards for every export stuffing batch.",
-        "sort_order": 1
+        "title": "How International Importers Authenticate Briquette Quality",
+        "category": "Market Intelligence",
+        "excerpt": "Technical procurement guide covering ash content, drop tests, and DG 4.2 compliance.",
+        "content": "# Enterprise Procurement Standards\n\nGlobal buyers inspect laboratory proximate analysis...",
+        "cover_image_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+        "author": "Chief Export Specialist",
+        "is_published": true,
+        "lang_code": "en"
+      }
+    }
+  },
+  "articles_delete_request": {
+    "jsonrpc": "2.0",
+    "id": 13,
+    "method": "tools/call",
+    "params": {
+      "name": "articles_delete",
+      "arguments": {
+        "id": "art_77ab91ef"
+      }
+    }
+  },
+  "inquiries_list_request": {
+    "jsonrpc": "2.0",
+    "id": 14,
+    "method": "tools/call",
+    "params": {
+      "name": "inquiries_list",
+      "arguments": {
+        "status": "new",
+        "limit": 20
       }
     }
   },
   "inquiries_update_status_request": {
     "jsonrpc": "2.0",
-    "id": 6,
+    "id": 15,
     "method": "tools/call",
     "params": {
       "name": "inquiries_update_status",
@@ -113,24 +217,43 @@
       }
     }
   },
-  "settings_update_request": {
+  "settings_update_discrete_socials_and_branding_request": {
     "jsonrpc": "2.0",
-    "id": 7,
+    "id": 16,
     "method": "tools/call",
     "params": {
       "name": "settings_update",
       "arguments": {
         "company_name": "ExportWeb Global Trade Infrastructure",
+        "company_profile": "Leading B2B exporter of certified biomass and agricultural commodities.",
         "whatsapp_number": "+628112345678",
         "office_address": "ExportWeb HQ Tower, Level 22, Jakarta, Indonesia",
         "factory_address": "Kendal Industrial Park Block B3, Central Java, Indonesia",
-        "social_links": "{\"linkedin\":\"https://linkedin.com/company/exportweb\",\"youtube\":\"https://youtube.com/@exportweb\"}"
+        "linkedin": "https://linkedin.com/company/exportweb",
+        "youtube": "https://youtube.com/@exportweb",
+        "instagram": "https://instagram.com/exportweb.app",
+        "logo_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+      }
+    }
+  },
+  "settings_update_localized_seo_request": {
+    "jsonrpc": "2.0",
+    "id": 17,
+    "method": "tools/call",
+    "params": {
+      "name": "settings_update",
+      "arguments": {
+        "lang_code": "de",
+        "seo_title": "ExportWeb Deutschland - Hochwertige Kokosnuss-Briketts",
+        "seo_description": "Führender indonesischer Exporteur für B2B Shisha- und Grill-Holzkohlebriketts.",
+        "seo_keywords": "kokosnuss, holzkohle, briketts, shisha, export",
+        "about_company": "PT ExportWeb liefert zertifizierte Shisha-Briketts direkt ab Werk nach Europa."
       }
     }
   },
   "languages_toggle_request": {
     "jsonrpc": "2.0",
-    "id": 8,
+    "id": 18,
     "method": "tools/call",
     "params": {
       "name": "languages_toggle",
@@ -142,7 +265,7 @@
   },
   "dashboard_stats_request": {
     "jsonrpc": "2.0",
-    "id": 9,
+    "id": 19,
     "method": "tools/call",
     "params": {
       "name": "dashboard_stats",
