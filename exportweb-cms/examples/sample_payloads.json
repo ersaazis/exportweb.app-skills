@@ -5,7 +5,7 @@
     "method": "tools/list",
     "params": {}
   },
-  "assets_upload_base64_request": {
+  "assets_upload_product_image_request": {
     "jsonrpc": "2.0",
     "id": 2,
     "method": "tools/call",
@@ -18,9 +18,22 @@
       }
     }
   },
-  "assets_upload_url_request": {
+  "assets_upload_og_banner_request": {
     "jsonrpc": "2.0",
     "id": 3,
+    "method": "tools/call",
+    "params": {
+      "name": "assets_upload",
+      "arguments": {
+        "file_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+        "filename": "og-trade-preview-1200x630.png",
+        "category": "branding"
+      }
+    }
+  },
+  "assets_upload_url_request": {
+    "jsonrpc": "2.0",
+    "id": 4,
     "method": "tools/call",
     "params": {
       "name": "assets_upload",
@@ -31,22 +44,22 @@
       }
     }
   },
-  "products_create_minimal_request": {
+  "products_create_with_clean_html_request": {
     "jsonrpc": "2.0",
-    "id": 4,
+    "id": 5,
     "method": "tools/call",
     "params": {
       "name": "products_create",
       "arguments": {
-        "name": "Grade A Coconut Shell Charcoal Briquettes",
+        "name": "Grade A Coconut Shell Charcoal Briquettes for Shisha",
         "category": "Commodities",
         "hs_code": "4402.90.10",
         "origin": "Semarang Port, Indonesia",
         "moq": "1x20ft FCL (18 MT)",
-        "packing_detail": "1kg inner box, 10kg master carton",
+        "packing_detail": "1kg inner box with plastic liner, 10kg master carton",
         "supply_capacity": "300 MT / Month",
         "incoterms": "CIF, CFR, FOB",
-        "description": "100% natural coconut shell briquettes with 2.2% max ash and 80% fixed carbon.",
+        "description": "<h2>Technical Specification</h2><p>100% natural coconut shell briquettes engineered for clean, odorless burning.</p><table class=\"w-full text-left border-collapse\"><thead><tr><th>Specification Metric</th><th>Testing Method</th><th>Guaranteed Value</th></tr></thead><tbody><tr><td>Fixed Carbon</td><td>ASTM D3172</td><td>&gt;= 80.0%</td></tr><tr><td>Ash Content</td><td>ASTM D3174</td><td>&lt;= 2.2% Max</td></tr><tr><td>Total Moisture</td><td>ISO 589</td><td>&lt;= 5.0% Max</td></tr><tr><td>Burning Time</td><td>Lab Controlled</td><td>2.5 - 3.0 Hours</td></tr></tbody></table>",
         "images": [
           "https://assets.exportweb.app/clients/exportweb/products/charcoal-hero.webp"
         ],
@@ -57,7 +70,7 @@
   },
   "products_create_inline_base64_request": {
     "jsonrpc": "2.0",
-    "id": 5,
+    "id": 6,
     "method": "tools/call",
     "params": {
       "name": "products_create",
@@ -70,7 +83,7 @@
         "packing_detail": "190kg steel food-grade drums",
         "supply_capacity": "250 MT / Month",
         "incoterms": "FOB, CIF",
-        "description": "Extra virgin coconut oil processed under HACCP and ISO 22000 standards. FFA < 0.1%.",
+        "description": "<h2>Product Purity</h2><p>Extra virgin coconut oil processed under HACCP and ISO 22000 standards. Free Fatty Acid (FFA) &lt; 0.1%.</p>",
         "image_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
         "is_featured": true,
         "is_active": true
@@ -79,7 +92,7 @@
   },
   "products_update_request": {
     "jsonrpc": "2.0",
-    "id": 6,
+    "id": 7,
     "method": "tools/call",
     "params": {
       "name": "products_update",
@@ -93,7 +106,7 @@
   },
   "products_delete_request": {
     "jsonrpc": "2.0",
-    "id": 7,
+    "id": 8,
     "method": "tools/call",
     "params": {
       "name": "products_delete",
@@ -104,7 +117,7 @@
   },
   "galleries_create_request": {
     "jsonrpc": "2.0",
-    "id": 8,
+    "id": 9,
     "method": "tools/call",
     "params": {
       "name": "galleries_create",
@@ -112,14 +125,14 @@
         "title": "Continuous Hydraulic Briquette Extrusion Line",
         "image_url": "https://assets.exportweb.app/clients/exportweb/gallery/hydraulic-press.jpg",
         "category": "Facility",
-        "description": "High-density automated continuous extrusion line.",
+        "description": "High-density automated continuous extrusion line with temperature and moisture sensors.",
         "sort_order": 1
       }
     }
   },
   "galleries_create_inline_base64_request": {
     "jsonrpc": "2.0",
-    "id": 9,
+    "id": 10,
     "method": "tools/call",
     "params": {
       "name": "galleries_create",
@@ -134,7 +147,7 @@
   },
   "galleries_delete_request": {
     "jsonrpc": "2.0",
-    "id": 10,
+    "id": 11,
     "method": "tools/call",
     "params": {
       "name": "galleries_delete",
@@ -143,48 +156,72 @@
       }
     }
   },
-  "articles_create_request": {
-    "jsonrpc": "2.0",
-    "id": 11,
-    "method": "tools/call",
-    "params": {
-      "name": "articles_create",
-      "arguments": {
-        "title": "Understanding Harmonized System (HS) Codes for Bulk Agricultural Exports",
-        "category": "Export Compliance",
-        "excerpt": "A practical compliance handbook for international exporters and freight forwarders navigating tariff classifications.",
-        "content": "# The Strategic Role of HS Code Classification\n\nPrecise tariff declaration prevents port demurrage...",
-        "author": "Trade Advisory Team",
-        "cover_image": "https://assets.exportweb.app/clients/exportweb/articles/hs-code-guide.jpg",
-        "is_published": true,
-        "meta_title": "Understanding HS Codes for Bulk Agricultural Exports | ExportWeb",
-        "meta_description": "Essential tariff and customs compliance guidelines for enterprise agricultural exporters.",
-        "meta_keywords": "HS code, export compliance, customs clearance, agricultural tariffs",
-        "lang_code": "en"
-      }
-    }
-  },
-  "articles_create_inline_cover_request": {
+  "articles_create_clean_html_request": {
     "jsonrpc": "2.0",
     "id": 12,
     "method": "tools/call",
     "params": {
       "name": "articles_create",
       "arguments": {
-        "title": "How International Importers Authenticate Briquette Quality",
+        "title": "How International Importers Authenticate Coconut Shell Briquette Quality",
         "category": "Market Intelligence",
-        "excerpt": "Technical procurement guide covering ash content, drop tests, and DG 4.2 compliance.",
-        "content": "# Enterprise Procurement Standards\n\nGlobal buyers inspect laboratory proximate analysis...",
-        "cover_image_base64": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=",
+        "excerpt": "A technical procurement guide covering ash content, drop tests, and DG 4.2 compliance for international buyers.",
+        "content": "<h2>Enterprise Procurement Standards</h2><p>Global buyers inspect laboratory proximate analysis before authorizing Irrevocable Letters of Credit.</p><blockquote><p>Never accept consignments without certified SHT (Self-Heating Test) and DG 4.2 classification reports.</p></blockquote><h2>Key Laboratory Inspection Parameters</h2><table class=\"w-full text-left border-collapse\"><thead><tr><th>Parameter</th><th>Standard</th><th>Threshold</th></tr></thead><tbody><tr><td>Ash Color</td><td>Visual</td><td>White / Light Grey</td></tr><tr><td>Fixed Carbon</td><td>ASTM D3172</td><td>Min 80%</td></tr><tr><td>Drop Shatter Index</td><td>ASTM D440</td><td>&gt; 95% intact</td></tr></tbody></table><div class=\"aspect-video my-6\"><iframe src=\"https://www.youtube.com/embed/dQw4w9WgXcQ\" title=\"Factory Inspection Walkthrough\" allowfullscreen></iframe></div>",
         "author": "Chief Export Specialist",
+        "cover_image": "https://assets.exportweb.app/clients/exportweb/articles/lab-inspection.jpg",
         "is_published": true,
+        "meta_title": "How Importers Authenticate Briquette Quality | ExportWeb",
+        "meta_description": "Technical guide on verifying ash content, volatile matter, and container stuffing certifications.",
+        "meta_keywords": "charcoal briquettes, export quality, laboratory testing, ASTM D3172",
         "lang_code": "en"
+      }
+    }
+  },
+  "articles_create_multilingual_arabic_request": {
+    "jsonrpc": "2.0",
+    "id": 13,
+    "method": "tools/call",
+    "params": {
+      "name": "articles_create",
+      "arguments": {
+        "title": "معايير فحص جودة فحم جوز الهند للشيشة للمستوردين في الشرق الأوسط",
+        "category": "Market Intelligence",
+        "excerpt": "دليل فني شامل للمستوردين في الخليج للتحقق من نسبة الرماد، مدة الاحتراق، وشهادات الشحن البحري DG 4.2.",
+        "content": "<h2>المعايير الفنية المعتمدة</h2><p>يعد فحم قشر جوز الهند الإندونيسي الخيار الأول للمقاهي والموزعين في دول الخليج العربي بفضل نقائه العالي واحتراقه الخالي من الرائحة والدخان.</p><blockquote><p>جميع الشحنات المصدرة تخضع لفحص شهادة السلامة البحرية DG 4.2 واختبار الاحتراق الذاتي SHT المعتمد من مختبرات دولية.</p></blockquote>",
+        "author": "خبير التجارة الدولية",
+        "cover_image": "https://assets.exportweb.app/clients/exportweb/articles/shisha-briquettes-middle-east.jpg",
+        "is_published": true,
+        "meta_title": "معايير فحص جودة فحم الشيشة الإندونيسي للمستوردين",
+        "meta_description": "دليل استيراد فحم الشيشة الطبيعي من إندونيسيا مع شهادات الفحص المخبري والشحن الدولي.",
+        "meta_keywords": "فحم جوز الهند, فحم شيشة, تصدير فحم إندونيسي, استيراد فحم",
+        "lang_code": "ar"
+      }
+    }
+  },
+  "articles_create_multilingual_indonesian_request": {
+    "jsonrpc": "2.0",
+    "id": 14,
+    "method": "tools/call",
+    "params": {
+      "name": "articles_create",
+      "arguments": {
+        "title": "Panduan Kepatuhan Ekspor Briket Arang Kelapa: Menembus Pasar Eropa dan Timur Tengah",
+        "category": "Export Compliance",
+        "excerpt": "Standar pengujian laboratorium ASTM, sertifikasi DG 4.2, dan prosedur stuffing kontainer untuk eksportir komoditas biomassa.",
+        "content": "<h2>Standar Kepatuhan Ekspor Global</h2><p>Pasar internasional menerapkan persyaratan ketat terkait pengiriman komoditas arang kelapa. Buyer B2B di Uni Eropa dan Timur Tengah mewajibkan dokumen uji laboratorium pihak ketiga sebelum penerbitan L/C.</p><h2>Dokumen Wajib Ekspor Briket</h2><ul><li><strong>COA (Certificate of Analysis):</strong> Kadar abu &lt;= 2.2% dan fixed carbon &gt;= 80%.</li><li><strong>MSDS (Material Safety Data Sheet):</strong> Klasifikasi keselamatan bahan kimia.</li><li><strong>SHT (Self-Heating Test):</strong> Pengujian sertifikasi DG 4.2 (Dangerous Goods) untuk keamanan kapal.</li></ul>",
+        "author": "Tim Kepatuhan Ekspor",
+        "cover_image": "https://assets.exportweb.app/clients/exportweb/articles/export-compliance-guide.jpg",
+        "is_published": true,
+        "meta_title": "Panduan Kepatuhan Ekspor Briket Arang Kelapa | ExportWeb",
+        "meta_description": "Pelajari standar COA, MSDS, dan sertifikasi DG 4.2 untuk ekspor briket arang kelapa Indonesia ke pasar global.",
+        "meta_keywords": "ekspor briket, briket arang kelapa, sertifikat DG 4.2, COA arang, ekspor komoditas",
+        "lang_code": "id"
       }
     }
   },
   "articles_delete_request": {
     "jsonrpc": "2.0",
-    "id": 13,
+    "id": 15,
     "method": "tools/call",
     "params": {
       "name": "articles_delete",
@@ -195,7 +232,7 @@
   },
   "inquiries_list_request": {
     "jsonrpc": "2.0",
-    "id": 14,
+    "id": 16,
     "method": "tools/call",
     "params": {
       "name": "inquiries_list",
@@ -207,7 +244,7 @@
   },
   "inquiries_update_status_request": {
     "jsonrpc": "2.0",
-    "id": 15,
+    "id": 17,
     "method": "tools/call",
     "params": {
       "name": "inquiries_update_status",
@@ -219,7 +256,7 @@
   },
   "settings_update_discrete_socials_and_branding_request": {
     "jsonrpc": "2.0",
-    "id": 16,
+    "id": 18,
     "method": "tools/call",
     "params": {
       "name": "settings_update",
@@ -236,9 +273,9 @@
       }
     }
   },
-  "settings_update_localized_seo_request": {
+  "settings_update_localized_german_seo_request": {
     "jsonrpc": "2.0",
-    "id": 17,
+    "id": 19,
     "method": "tools/call",
     "params": {
       "name": "settings_update",
@@ -251,9 +288,35 @@
       }
     }
   },
-  "languages_toggle_request": {
+  "settings_update_localized_arabic_seo_request": {
     "jsonrpc": "2.0",
-    "id": 18,
+    "id": 20,
+    "method": "tools/call",
+    "params": {
+      "name": "settings_update",
+      "arguments": {
+        "lang_code": "ar",
+        "seo_title": "إكسبورت ويب - فحم قشر جوز الهند الطبيعي للشيشة والشواء",
+        "seo_description": "المصنع الإندونيسي الرائد في إنتاج فحم قشر جوز الهند عالي الجودة للشيشة مع شحن مباشر إلى موانئ الخليج العربي.",
+        "seo_keywords": "فحم جوز الهند, فحم شيشة, تصدير فحم إندونيسي, فحم شواء",
+        "about_company": "تلتزم شركة إكسبورت ويب بتوفير أعلى معايير الجودة والشفافية في توريد الفحم الإندونيسي للأسواق العالمية."
+      }
+    }
+  },
+  "languages_list_request": {
+    "jsonrpc": "2.0",
+    "id": 21,
+    "method": "tools/call",
+    "params": {
+      "name": "languages_list",
+      "arguments": {
+        "enabled_only": false
+      }
+    }
+  },
+  "languages_toggle_arabic_request": {
+    "jsonrpc": "2.0",
+    "id": 22,
     "method": "tools/call",
     "params": {
       "name": "languages_toggle",
@@ -265,7 +328,7 @@
   },
   "dashboard_stats_request": {
     "jsonrpc": "2.0",
-    "id": 19,
+    "id": 23,
     "method": "tools/call",
     "params": {
       "name": "dashboard_stats",

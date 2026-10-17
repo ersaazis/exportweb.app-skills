@@ -25,14 +25,29 @@ Tools to upload and store high-resolution B2B photography, plant walkthroughs, a
 Upload an image or asset file to storage via inline Base64 data or remote URL fetch.
 - **Parameters**:
   - `file_base64` *(string, optional)*: Base64-encoded string of the file (supports raw base64 or `data:<mime>;base64,...` URI).
-  - `source_url` *(string, optional)*: Remote HTTP/HTTPS URL to download and ingest into storage.
-  - `filename` *(string, optional)*: Desired filename (e.g. `"autoclave-01.jpg"`, `"brand-logo.png"`). Auto-derived if omitted.
-  - `category` *(string, optional)*: Target category (`"branding"`, `"products"`, `"gallery"`, `"articles"`, `"general"`, default: `"general"`).
+  - `source_url` *(string, optional)*: Remote HTTP/HTTPS URL to download, optimize, and ingest into storage.
+  - `filename` *(string, optional)*: Desired filename (e.g. `"autoclave-01.webp"`, `"brand-logo.svg"`). Auto-derived if omitted.
+  - `category` *(string, optional)*: Target category folder:
+    - `"branding"`: Logos, browser favicons, OpenGraph social preview banners.
+    - `"products"`: Export commodity photos, technical packaging diagrams.
+    - `"gallery"`: Production facilities, kilns, autoclaves, quality control laboratories, container stuffing docks.
+    - `"articles"`: Market intelligence covers, technical infographics, certification scans.
+    - `"general"`: Miscellaneous client documents, technical spec PDFs (default: `"general"`).
   - `content_type` *(string, optional)*: Explicit MIME type. Auto-detected from bytes or extension if omitted.
+- **Allowed File Extensions**:
+  - Images: `.jpg`, `.jpeg`, `.png`, `.webp`, `.svg`, `.gif`, `.avif`.
+  - Documents: `.pdf`.
+- **Optimal Image Dimensions & Ratios**:
+  - *OpenGraph Banner*: `1200 x 630 px` (1.91:1 ratio, max 1MB).
+  - *Brand Logo*: Vector SVG or `512 x 512 px` transparent PNG (max 500KB).
+  - *Browser Favicon*: `32x32`, `180x180 px` (`.ico`, `.png`, `.svg`, max 100KB).
+  - *Product Catalog*: `1200 x 900 px` (4:3) or `1000 x 1000 px` (1:1) (max 2MB).
+  - *Facility Gallery*: `1920 x 1080 px` (16:9) or `1200 x 900 px` (4:3) (max 3MB).
+  - *Article Cover*: `1200 x 675 px` (16:9) (max 2MB).
 - **Returns**: Object with:
   - `status`: `"uploaded"`
-  - `url`: Permanent public asset HTTPS URL.
-  - `key`: S3/R2 object storage key (`clients/{tenant}/...`).
+  - `url`: Permanent public asset HTTPS URL (`https://assets.exportweb.app/clients/{tenant}/...`).
+  - `key`: S3/R2 object storage key (`clients/{tenant}/{category}/{filename}`).
   - `filename`: Clean sanitized filename.
   - `category`: Storage category.
 
@@ -63,6 +78,8 @@ Register a new product or export package in the catalog.
   - `supply_capacity` *(string, optional)*: Monthly production capacity (e.g. `"300 Metric Tons / Month"`).
   - `incoterms` *(string, optional)*: Supported trade terms (e.g. `"FOB, CIF, CFR, EXW"`).
   - `description` *(string, optional)*: Detailed product specifications and descriptions.
+    - *HTML Formatting Standard*: Supports clean semantic HTML5 rendered inside Tailwind `.prose`. Wrap sections in `<h2>`, `<h3>`, `<p>`, `<ul>`, and specification tables (`<table>`, `<thead>`, `<tbody>`).
+    - *Anti-XSS Sanitization*: Automatically cleaned via `SanitizeArticleHTML`. Scripts, styles, and unsafe event handlers are stripped.
   - `images` *(array of string, optional)*: Array of HTTPS URLs for product photographs.
   - `images_base64` *(array of string/objects, optional)*: Inline Base64 image data to auto-upload to storage.
   - `image_base64` *(string, optional)*: Single inline Base64 image to auto-upload.
@@ -92,7 +109,7 @@ Update specifications or status of an existing product.
   - `packing_detail` *(string, optional)*: Updated packing details.
   - `supply_capacity` *(string, optional)*: Updated monthly supply volume.
   - `incoterms` *(string, optional)*: Updated Incoterms.
-  - `description` *(string, optional)*: Updated description text.
+  - `description` *(string, optional)*: Updated description text (sanitized via `SanitizeArticleHTML`).
   - `images` *(array of string, optional)*: Updated list of image URLs.
   - `images_base64` *(array, optional)*: New Base64 images to upload and append.
   - `source_url` *(string, optional)*: Remote image URL to download and append.
@@ -177,9 +194,14 @@ Publish a new export intelligence article with complete metadata.
 - **Parameters**:
   - `title` *(string, **required**)*: Article headline.
   - `slug` *(string, optional)*: URL slug. Auto-generated from `title` if omitted.
-  - `content` *(string, **required**)*: Markdown or HTML formatted article body.
+  - `content` *(string, **required**)*: Clean semantic HTML or Markdown body:
+    - *TinyMCE Compatibility*: Styled automatically via Tailwind `.prose`. Use `<h2>`, `<h3>`, `<p>`, `<ul>`, `<ol>`, `<blockquote>`, `<table>`, `<figure>`, `<figcaption>`.
+    - *Whitelisted Tags*: `p, br, h1-h6, strong, b, em, i, u, s, blockquote, ul, ol, li, a, img, pre, code, span, hr, table, thead, tbody, tr, th, td, figure, figcaption, div, caption, col, colgroup, iframe`.
+    - *Whitelisted Attributes*: `href, src, alt, title, class, id, style, target, rel, width, height, frameborder, allow, allowfullscreen, loading, scope`.
+    - *Iframe Whitelist*: YouTube (`youtube.com/embed/`, `youtube-nocookie.com/embed/`) and Vimeo (`player.vimeo.com/video/`). Untrusted iframes are stripped.
+    - *Automatic Anti-XSS*: Strips `<script>`, `<style>`, `<object>`, `<embed>`, `<svg>`, `<math>`, comments, `on*` events, and `javascript:` URLs. Forces `rel="noopener noreferrer"` on `target="_blank"`.
   - `excerpt` *(string, optional)*: Executive summary / lead paragraph.
-  - `category` *(string, optional)*: Article category.
+  - `category` *(string, optional)*: Article category (e.g. `"Market Intelligence"`, `"Export Compliance"`).
   - `cover_image` *(string, optional)*: Feature image HTTPS URL.
   - `cover_image_base64` *(string, optional)*: Inline Base64 image data to auto-upload as cover.
   - `source_url` *(string, optional)*: Remote image URL to download and set as cover.
@@ -188,7 +210,7 @@ Publish a new export intelligence article with complete metadata.
   - `meta_title` *(string, optional)*: SEO title tag (under 60 characters).
   - `meta_description` *(string, optional)*: SEO meta description (under 160 characters).
   - `meta_keywords` *(string, optional)*: Comma-separated keyword string.
-  - `lang_code` *(string, optional)*: Language code (default: `"en"`).
+  - `lang_code` *(string, optional)*: Target language locale from the 11 supported languages (`"en"`, `"id"`, `"es"`, `"zh"`, `"ar"`, `"fr"`, `"de"`, `"ja"`, `"pt"`, `"ru"`, `"vi"`, default: `"en"`).
 - **Returns**: Created article record.
 
 ### `articles_read`
@@ -208,10 +230,9 @@ Update body content, SEO metadata, or publish status of an article. Automaticall
   - `cover_image` *(string, optional)*: New cover image URL.
   - `cover_image_base64` *(string, optional)*: New Base64 image to upload as cover.
   - `source_url` *(string, optional)*: Remote image URL to download as cover.
-  - `content` *(string, optional)*: Updated content body.
+  - `content` *(string, optional)*: Updated clean HTML content (sanitized via `SanitizeArticleHTML`).
   - `excerpt` *(string, optional)*: Updated excerpt.
   - `category` *(string, optional)*: Updated category.
-  - `cover_image` *(string, optional)*: Updated cover URL.
   - `author` *(string, optional)*: Updated author name.
   - `is_published` *(boolean, optional)*: Updated publish status.
   - `meta_title` *(string, optional)*: Updated SEO title.
@@ -221,14 +242,14 @@ Update body content, SEO metadata, or publish status of an article. Automaticall
 - **Returns**: Updated article record.
 
 ### `articles_delete`
-Delete an article and all its localized versions.
+Delete an article and all its localized versions. Automatically prunes cover images from storage.
 - **Parameters**:
   - `id` *(string, **required**)*: Article ID to delete.
 - **Returns**: Confirmation.
 
 ---
 
-## 📬 4. Buyer Inquiries & Leads Tools
+## 📬 5. Buyer Inquiries & Leads Tools
 
 Monitor international buyer RFQs, triage inquiries, and direct notification routing.
 
@@ -245,7 +266,7 @@ Fetch buyer inquiries with optional status filtering.
 Inspect full details of a specific buyer inquiry.
 - **Parameters**:
   - `id` *(string, **required**)*: Inquiry ID (e.g. `"inq_123"`).
-- **Returns**: Full inquiry details including contact info, message, and timestamp.
+- **Returns**: Full inquiry details including contact info, message, target commodity, quantity, and timestamp.
 
 ### `inquiries_update_status`
 Transition the workflow status of an inquiry.
@@ -269,7 +290,7 @@ Manage tenant corporate identity, contact coordinates, discrete social media pro
 ### `settings_get`
 Retrieve current tenant configuration, branding URLs, and contact parameters.
 - **Parameters**:
-  - `lang_code` *(string, optional)*: Optional locale for localized settings (e.g. `"id"`, `"de"`, `"zh"`, `"ja"`).
+  - `lang_code` *(string, optional)*: Optional locale for localized settings (e.g. `"en"`, `"id"`, `"es"`, `"zh"`, `"ar"`, `"fr"`, `"de"`, `"ja"`, `"pt"`, `"ru"`, `"vi"`).
 - **Returns**: Complete settings dictionary with branding URLs and localized SEO tags.
 
 ### `settings_update`
@@ -287,7 +308,7 @@ Update corporate profile, plant locations, social links, branding assets, and SE
   - `seo_description` *(string, optional)*: Default site meta description.
   - `seo_keywords` *(string, optional)*: Default site meta keywords.
   - `about_company` *(string, optional)*: Localized about company text (used when `lang_code` is specified).
-  - `lang_code` *(string, optional)*: Language locale for saving localized SEO tags (e.g. `"ja"`, `"de"`, `"id"`).
+  - `lang_code` *(string, optional)*: Language locale for saving localized SEO tags (`"en"`, `"id"`, `"es"`, `"zh"`, `"ar"`, `"fr"`, `"de"`, `"ja"`, `"pt"`, `"ru"`, `"vi"`).
   - `logo_url` *(string, optional)*: Main logo HTTPS URL.
   - `logo_base64` *(string, optional)*: Inline Base64 image data to auto-upload as brand logo (prunes old logo).
   - `logo_source_url` *(string, optional)*: Remote image URL to download as logo.
@@ -312,18 +333,32 @@ Update corporate profile, plant locations, social links, branding assets, and SE
 
 ## 🌐 7. Languages & Multilingual Routing Tools
 
-Control active subfolder languages for the tenant storefront.
+Control active subfolder languages for the tenant storefront. ExportWeb supports **11 standardized international trade languages**:
+
+| Code | Language | Native Name | Direction | Default |
+| :---: | :--- | :--- | :---: | :---: |
+| **`en`** | English | English | LTR | **Primary Default** |
+| **`id`** | Indonesian | Bahasa Indonesia | LTR | Active |
+| **`es`** | Spanish | Español | LTR | Active |
+| **`zh`** | Chinese Simplified | 简体中文 | LTR | Active |
+| **`ar`** | Arabic | العربية | **RTL** | Active |
+| **`fr`** | French | Français | LTR | Active |
+| **`de`** | German | Deutsch | LTR | Active |
+| **`ja`** | Japanese | 日本語 | LTR | Active |
+| **`pt`** | Portuguese | Português | LTR | Active |
+| **`ru`** | Russian | Русский | LTR | Active |
+| **`vi`** | Vietnamese | Tiếng Việt | LTR | Active |
 
 ### `languages_list`
 List all configured languages and their active status.
 - **Parameters**:
   - `enabled_only` *(boolean, optional)*: If `true`, returns only active languages.
-- **Returns**: Array of language objects containing `code`, `name`, `native_name`, and `is_enabled`.
+- **Returns**: Array of language objects containing `code`, `name`, `native_name`, `is_default`, `is_enabled`, and `is_rtl`.
 
 ### `languages_toggle`
 Enable or disable a specific language locale.
 - **Parameters**:
-  - `code` *(string, **required**)*: 2-letter ISO language code (e.g. `"ar"`, `"de"`, `"zh"`, `"ja"`, `"es"`, `"fr"`, `"pt"`, `"ru"`, `"vi"`).
+  - `code` *(string, **required**)*: 2-letter ISO language code: `"en"`, `"id"`, `"es"`, `"zh"`, `"ar"`, `"fr"`, `"de"`, `"ja"`, `"pt"`, `"ru"`, `"vi"`.
   - `is_enabled` *(boolean, **required**)*: Set `true` to activate or `false` to deactivate.
 - **Returns**: Updated locale status.
 
@@ -342,4 +377,3 @@ Retrieve an executive overview of platform activity and database volumes.
   - `new_inquiries`: Unprocessed leads requiring attention.
   - `enabled_languages`: Count of active multilingual locales.
   - `engine_version`: Active platform backend version.
-
